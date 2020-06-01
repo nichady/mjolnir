@@ -1,0 +1,9 @@
+name: Mjolnir
+version: ${project.version}
+main: io.github.nichthai.mjolnir.Mjolnir
+api-version: 1.13
+authors: [nichthai]
+commands:
+  mjolnir:
+    description: Main command for the Mjolnir plugin
+    usage: /<command>

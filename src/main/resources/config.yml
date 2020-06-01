@@ -1,0 +1,10 @@
+material: GOLDEN_AXE
+name: "&6Mjölnir"
+ench:
+  - sharpness:3
+lore:
+  - "&3The Hammer of Thor"
+  - "&1Right click to throw."
+  - "&1Shift right click to summon lightning."
+unbreakable: true
+custom_model_data: 0
