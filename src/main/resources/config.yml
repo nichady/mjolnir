@@ -4,7 +4,30 @@ ench:
   - sharpness:3
 lore:
   - "&3The Hammer of Thor"
+  - ""
   - "&1Right click to throw."
   - "&1Shift right click to summon lightning."
+  - "&1Shift right click while looking up to supercharge."
 unbreakable: true
 custom_model_data: 0
+abilities:
+  throw:
+    damage: 10
+    cooldown: 1.5
+  lightning:
+    damage: 20
+    cooldown: 8
+  supercharge:
+    damage: 20
+    cooldown: 120
+    duration: 14
+    super_abilities:
+      throw:
+        damage: 20
+        cooldown: 0
+      lightning:
+        damage: 20
+        cooldown: 2
+        explosion_power: 7
+        set_fire: true
+        break_blocks: true
