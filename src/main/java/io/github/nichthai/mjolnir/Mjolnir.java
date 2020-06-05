@@ -18,6 +18,7 @@ public final class Mjolnir extends JavaPlugin
 		getCommand("mjolnir").setExecutor(new Cmd(this));
 		
 		Bukkit.getPluginManager().registerEvents(e, this);
+		e.schedule();
 	}
 	
 	@Override
