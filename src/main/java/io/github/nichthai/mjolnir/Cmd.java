@@ -77,8 +77,8 @@ final class Cmd implements TabExecutor
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.GOLD + (ChatColor.BOLD + plugin.getDescription().getFullName()));
 		if (sender.hasPermission("mjolnir.command.help")) sender.sendMessage(ChatColor.BLUE + "/mjolnir help" + ChatColor.GRAY + " Displays this");
-		if (sender.hasPermission("mjolnir.command.items")) sender.sendMessage(ChatColor.BLUE + "/mjolnir get" + ChatColor.GRAY + " Gets Mjolnir");
-		if (sender.hasPermission("mjolnir.command.give")) sender.sendMessage(ChatColor.BLUE + "/mjolnir reload" + ChatColor.GRAY + " Reloads config");
+		if (sender.hasPermission("mjolnir.command.get")) sender.sendMessage(ChatColor.BLUE + "/mjolnir get" + ChatColor.GRAY + " Gets Mjolnir");
+		if (sender.hasPermission("mjolnir.command.reload")) sender.sendMessage(ChatColor.BLUE + "/mjolnir reload" + ChatColor.GRAY + " Reloads config");
 		sender.sendMessage("");
 	}
 	
