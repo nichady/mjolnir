@@ -207,7 +207,7 @@ final class Events implements Listener
 	
 	private void supercharge(final Player player)
 	{
-	//	superchargeCooldown.put(player, sectionn().getDouble("supercharge.cooldown"));
+		superchargeCooldown.put(player, sectionn().getDouble("supercharge.cooldown"));
 		final Location loc = player.getLocation();
 		strikeEffect(loc, 50, 10);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
