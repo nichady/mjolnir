@@ -11,6 +11,7 @@ lore:
   - "&1While superchared, your abilities are enhanced."
 unbreakable: true
 custom_model_data: 0
+require_permissions_to_use: false
 abilities:
   throw:
     damage: 10

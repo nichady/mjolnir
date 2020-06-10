@@ -87,34 +87,51 @@ final class Events implements Listener
 		{
 			if (!player.isSneaking())
 			{
-				if (!supercharge.has(player))
+				if (player.hasPermission("mjolnir.use.throw") || !plugin.getConfig().getBoolean("require_permissions_to_use"))
 				{
-					if (throwCooldown.ready(player)) throww(player, false);
-					else player.sendMessage(ChatColor.RED + "On Cooldown! (" + throwCooldown.getSecondsRemaining(player, true) + " seconds)");
+					if (!supercharge.has(player))
+					{
+						if (throwCooldown.ready(player)) throww(player, false);
+						else
+							player.sendMessage(ChatColor.RED + "On Cooldown! (" + throwCooldown.getSecondsRemaining(player, true) + " seconds)");
+					}
+					else
+					{
+						if (superThrowCooldown.ready(player)) throww(player, true);
+						else
+							player.sendMessage(ChatColor.RED + "On Cooldown! (" + superThrowCooldown.getSecondsRemaining(player, true) + " seconds)");
+					}
 				}
-				else
-				{
-					if (superThrowCooldown.ready(player)) throww(player, true);
-					else player.sendMessage(ChatColor.RED + "On Cooldown! (" + superThrowCooldown.getSecondsRemaining(player, true) + " seconds)");
-				}
+				else player.sendMessage(ChatColor.RED + "You don't have permission to use this.");
 			}
 			else if (player.getLocation().getPitch() > -70)
 			{
-				if (!supercharge.has(player))
+				if (player.hasPermission("mjolnir.use.lightning") || !plugin.getConfig().getBoolean("require_permissions_to_use"))
 				{
-					if (lightningCooldown.ready(player)) lightning(player, false);
-					else player.sendMessage(ChatColor.RED + "On Cooldown! (" + lightningCooldown.getSecondsRemaining(player, true) + " seconds)");
+					if (!supercharge.has(player))
+					{
+						if (lightningCooldown.ready(player)) lightning(player, false);
+						else
+							player.sendMessage(ChatColor.RED + "On Cooldown! (" + lightningCooldown.getSecondsRemaining(player, true) + " seconds)");
+					}
+					else
+					{
+						if (superLightningCooldown.ready(player)) lightning(player, true);
+						else
+							player.sendMessage(ChatColor.RED + "On Cooldown! (" + superLightningCooldown.getSecondsRemaining(player, true) + " seconds)");
+					}
 				}
-				else
-				{
-					if (superLightningCooldown.ready(player)) lightning(player, true);
-					else player.sendMessage(ChatColor.RED + "On Cooldown! (" + superLightningCooldown.getSecondsRemaining(player, true) + " seconds)");
-				}
+				else player.sendMessage(ChatColor.RED + "You don't have permission to use this.");
 			}
 			else
 			{
-				if (superchargeCooldown.ready(player)) supercharge(player);
-				else player.sendMessage(ChatColor.RED + "On Cooldown! (" + superchargeCooldown.getSecondsRemaining(player, true) + " seconds)");
+				if (player.hasPermission("mjolnir.use.supercharge") || !plugin.getConfig().getBoolean("require_permissions_to_use"))
+				{
+					if (superchargeCooldown.ready(player)) supercharge(player);
+					else
+						player.sendMessage(ChatColor.RED + "On Cooldown! (" + superchargeCooldown.getSecondsRemaining(player, true) + " seconds)");
+				}
+				else player.sendMessage(ChatColor.RED + "You don't have permission to use this.");
 			}
 		}
 	}
