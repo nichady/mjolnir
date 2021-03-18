@@ -8,7 +8,7 @@ lore:
   - "&1Right click to throw."
   - "&1Shift right click to summon lightning."
   - "&1Shift right click while looking up to supercharge."
-  - "&1While superchared, your abilities are enhanced."
+  - "&1While supercharged, your abilities are enhanced."
 unbreakable: true
 custom_model_data: 0
 require_permissions_to_use: false
