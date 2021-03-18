@@ -19,23 +19,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-final class Cmd implements TabExecutor
-{
+final class Cmd implements TabExecutor {
     private final Mjolnir plugin;
     private ItemStack item;
 
-    Cmd(final Mjolnir plugin)
-    {
+    Cmd(final Mjolnir plugin) {
         this.plugin = plugin;
         reload();
     }
 
     @Override
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args)
-    {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
         if (args.length == 0) sendMainMessage(sender);
-        else switch (args[0])
-        {
+        else switch (args[0]) {
             case "?":
             case "help":
                 if (sender.hasPermission("mjolnir.command.help")) sendHelpMessage(sender);
@@ -47,8 +43,7 @@ final class Cmd implements TabExecutor
                 else sender.sendMessage(ChatColor.RED + "Only players can use this command!");
                 break;
             case "reload":
-                if (sender.hasPermission("mjolnir.command.reload"))
-                {
+                if (sender.hasPermission("mjolnir.command.reload")) {
                     plugin.reloadConfig();
                     reload();
                     sender.sendMessage(ChatColor.BLUE + "Plugin reloaded.");
@@ -60,20 +55,17 @@ final class Cmd implements TabExecutor
     }
 
     @Override
-    public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args)
-    {
+    public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
         if (args.length > 1) return new ArrayList<>();
         return StringUtil.copyPartialMatches(args[0], Arrays.asList("help", "get", "reload"), new ArrayList<>());
     }
 
-    private void sendMainMessage(final CommandSender sender)
-    {
+    private void sendMainMessage(final CommandSender sender) {
         sender.sendMessage(ChatColor.BLUE + "Running " + ChatColor.GOLD + ChatColor.BOLD + plugin.getDescription().getFullName());
         if (sender.hasPermission("mjolnir.command.help")) sender.sendMessage(ChatColor.BLUE + "Use " + ChatColor.GOLD + "/mjolnir help " + ChatColor.BLUE + "to view available commands.");
     }
 
-    private void sendHelpMessage(final CommandSender sender)
-    {
+    private void sendHelpMessage(final CommandSender sender) {
         sender.sendMessage("");
         sender.sendMessage(ChatColor.GOLD + (ChatColor.BOLD + plugin.getDescription().getFullName()));
         if (sender.hasPermission("mjolnir.command.help")) sender.sendMessage(ChatColor.BLUE + "/mjolnir help" + ChatColor.GRAY + " Displays this");
@@ -82,20 +74,17 @@ final class Cmd implements TabExecutor
         sender.sendMessage("");
     }
 
-    private void giveItem(final Player player)
-    {
+    private void giveItem(final Player player) {
         if (player.getInventory().firstEmpty() == -1) player.sendMessage(ChatColor.RED + "Please empty your inventory first!");
         else player.getInventory().addItem(item.clone());
     }
 
-    private void reload()
-    {
+    private void reload() {
         final ConfigurationSection config = plugin.getConfig();
         item = new ItemStack(Material.matchMaterial(config.getString("material")));
         final ItemMeta meta = item.getItemMeta();
 
-        for (final String s : config.getStringList("ench"))
-        {
+        for (final String s : config.getStringList("ench")) {
             final String enchName = s.split(":")[0].toLowerCase();
             final int lvl = Integer.parseInt(s.split(":")[1]);
             final Enchantment ench = Enchantment.getByKey(NamespacedKey.minecraft(enchName));

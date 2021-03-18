@@ -4,14 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Mjolnir extends JavaPlugin
-{
+public final class Mjolnir extends JavaPlugin {
     final NamespacedKey key = new NamespacedKey(this, "mjolnir");
     private final Events e = new Events(this);
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         getConfig().options().copyDefaults(true);
         saveConfig();
 
@@ -22,8 +20,7 @@ public final class Mjolnir extends JavaPlugin
     }
 
     @Override
-    public void onDisable()
-    {
+    public void onDisable() {
         e.cleanUp();
     }
 }
