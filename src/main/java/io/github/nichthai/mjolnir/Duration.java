@@ -6,23 +6,23 @@ import org.bukkit.entity.Entity;
 import java.util.HashSet;
 import java.util.UUID;
 
-public class Duration
-{
-	private final HashSet<UUID> set = new HashSet<>();
-	private final Mjolnir plugin;
-	
-	public Duration(final Mjolnir plugin) { this.plugin = plugin; }
-	
-	public void put(final Entity entity, double seconds)
-	{
-		final UUID uuid = entity.getUniqueId();
-		set.add(uuid);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> set.remove(uuid), Math.round(seconds * 20));
-	}
-	
-	public boolean has(final Entity entity) { return set.contains(entity.getUniqueId()); }
-	public HashSet<UUID> getAll()
-	{
-		return set;
-	}
+public class Duration {
+    private final HashSet<UUID> set = new HashSet<>();
+    private final Mjolnir plugin;
+
+    public Duration(final Mjolnir plugin) { this.plugin = plugin; }
+
+    public void put(final Entity entity, double seconds) {
+        final UUID uuid = entity.getUniqueId();
+        set.add(uuid);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> set.remove(uuid), Math.round(seconds * 20));
+    }
+
+    public boolean has(final Entity entity) {
+        return set.contains(entity.getUniqueId());
+    }
+
+    public HashSet<UUID> getAll() {
+        return set;
+    }
 }
