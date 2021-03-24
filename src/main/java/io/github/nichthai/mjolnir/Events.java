@@ -217,7 +217,7 @@ final class Events implements Listener {
                         if (m.getOwningPlugin().equals(plugin)) continue outer;
                     if (e != thrower && e != stand && e instanceof LivingEntity) {
                         ((LivingEntity) e).damage(sectionn().getDouble(superd ? "supercharge.super_abilities.throw.damage" : "throw.damage"), thrower);
-                        if (stand.getFireTicks() > e.getFireTicks()) e.setFireTicks(stand.getFireTicks()); // TODO configuration
+                        if (sectionn().getBoolean(superd ? "supercharge.super_abilities.throw.ignite" : "throw.ignite") && stand.getFireTicks() > e.getFireTicks()) e.setFireTicks(stand.getFireTicks());
                         throwMjolnir(stand, thrower, v, superd ? recurse + 1 : 30, superd);
                         return;
                     }
