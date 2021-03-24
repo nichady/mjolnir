@@ -16,6 +16,7 @@ abilities:
   throw:
     damage: 10
     cooldown: 1.5
+    ignite: true
   lightning:
     damage: 20
     cooldown: 8
@@ -27,6 +28,7 @@ abilities:
       throw:
         damage: 20
         cooldown: 0
+        ignite: true
       lightning:
         damage: 20
         cooldown: 2
