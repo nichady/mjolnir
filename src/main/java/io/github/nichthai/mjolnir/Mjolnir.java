@@ -1,5 +1,6 @@
 package io.github.nichthai.mjolnir;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +11,8 @@ public final class Mjolnir extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        final Metrics metrics = new Metrics(this, 10798);
+        
         getConfig().options().copyDefaults(true);
         saveConfig();
 
