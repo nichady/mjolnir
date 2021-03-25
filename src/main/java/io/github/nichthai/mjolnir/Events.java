@@ -9,9 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -47,7 +46,7 @@ final class Events implements Listener {
             }
         }, 0, 2);
     }
-
+    
     @EventHandler
     void cancelArmorStandManipulate(final PlayerArmorStandManipulateEvent e) {
         for (final MetadataValue m : e.getRightClicked().getMetadata("mjolnir")) {
@@ -78,8 +77,9 @@ final class Events implements Listener {
 
     @EventHandler
     void onRightClick(final PlayerInteractEvent e) {
+        if (e.getHand() == EquipmentSlot.OFF_HAND) return;
         final Player player = e.getPlayer();
-        if ((e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && e.hasItem() && e.getItem().getItemMeta().getPersistentDataContainer().has(plugin.key, PersistentDataType.INTEGER)) {
+        if ((e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && e.hasItem() && isMjolnir(e.getItem())) {
             if (!player.isSneaking()) {
                 if (player.hasPermission("mjolnir.use.throw") || !plugin.getConfig().getBoolean("require_permissions_to_use")) {
                     if (!supercharge.has(player)) {
@@ -143,8 +143,8 @@ final class Events implements Listener {
             }
         }
     }
-
-    private void throww(final Player player, final boolean superd) {
+    
+    private void throww(final Player player, /*final boolean mainHand,*/ final boolean superd) {
         for (final ArmorStand as : mjolnirThrown)
             for (final MetadataValue m : as.getMetadata("mjolnir"))
                 if (m.getOwningPlugin().equals(plugin) && m.asString().equals(player.getUniqueId().toString())) return;
@@ -209,8 +209,7 @@ final class Events implements Listener {
     private void throwMjolnir(final ArmorStand stand, final Player thrower, final Vector v, final int recurse, final boolean superd) {
         if (stand.isDead()) return;
         if (recurse < 30) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
-            {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 outer:
                 for (final Entity e : stand.getNearbyEntities(1.0, 1.0, 1.0)) {
                     for (final MetadataValue m : e.getMetadata("mjolnir"))
@@ -302,5 +301,10 @@ final class Events implements Listener {
 
     private void strikeEffect(final Location loc, final int yOffset, final int bound) {
         loc.getWorld().strikeLightningEffect(loc.add(ThreadLocalRandom.current().nextDouble(-bound, bound), yOffset, ThreadLocalRandom.current().nextDouble(-bound, bound)));
+    }
+    
+    private boolean isMjolnir(final ItemStack i) {
+        if (i == null || i.getItemMeta() == null) return false;
+        return i.getItemMeta().getPersistentDataContainer().has(plugin.key, PersistentDataType.INTEGER);
     }
 }
