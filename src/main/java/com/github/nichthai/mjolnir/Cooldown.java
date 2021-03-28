@@ -1,4 +1,4 @@
-package io.github.nichthai.mjolnir;
+package com.github.nichthai.mjolnir;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

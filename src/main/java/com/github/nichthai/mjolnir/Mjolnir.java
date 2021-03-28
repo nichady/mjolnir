@@ -1,4 +1,4 @@
-package io.github.nichthai.mjolnir;
+package com.github.nichthai.mjolnir;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
