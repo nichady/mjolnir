@@ -36,7 +36,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>io.github.nichthai.mjolnir.libs.bstats</shadedPattern>
+                            <shadedPattern>io.github.nichthai.mjolnir.libs.org.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
