@@ -32,7 +32,7 @@ final class Events implements Listener {
     private final Duration supercharge;
     private final Set<ArmorStand> mjolnirThrown = new HashSet<>();
 
-    Events(final Mjolnir plugin) {
+    Events(Mjolnir plugin) {
         this.plugin = plugin;
         supercharge = new Duration(plugin);
     }
@@ -48,14 +48,14 @@ final class Events implements Listener {
     }
     
     @EventHandler
-    void cancelArmorStandManipulate(final PlayerArmorStandManipulateEvent e) {
+    void cancelArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
         for (final MetadataValue m : e.getRightClicked().getMetadata("mjolnir")) {
             if (m.getOwningPlugin() != null && m.getOwningPlugin().equals(plugin)) e.setCancelled(true);
         }
     }
 
     @EventHandler
-    void onPlayerQuit(final PlayerQuitEvent e) {
+    void onPlayerQuit(PlayerQuitEvent e) {
         final Player player = e.getPlayer();
         outer:
         for (final ArmorStand a : mjolnirThrown)
@@ -76,9 +76,9 @@ final class Events implements Listener {
     }
 
     @EventHandler
-    void onRightClick(final PlayerInteractEvent e) {
+    void onRightClick(PlayerInteractEvent e) {
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
-        final Player player = e.getPlayer();
+        Player player = e.getPlayer();
         if ((e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && e.hasItem() && isMjolnir(e.getItem())) {
             if (!player.isSneaking()) {
                 if (player.hasPermission("mjolnir.use.throw") || !plugin.getConfig().getBoolean("require_permissions_to_use")) {
@@ -115,7 +115,7 @@ final class Events implements Listener {
     }
 
     @EventHandler
-    void onDamage(final EntityDamageByEntityEvent e) {
+    void onDamage(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Damageable)) return;
         final Damageable victim = ((Damageable) e.getEntity());
         final Entity damager = e.getDamager();
@@ -144,14 +144,14 @@ final class Events implements Listener {
         }
     }
     
-    private void throww(final Player player, /*final boolean mainHand,*/ final boolean superd) {
-        for (final ArmorStand as : mjolnirThrown)
-            for (final MetadataValue m : as.getMetadata("mjolnir"))
+    private void throww(Player player, /*boolean mainHand,*/ final boolean superd) {
+        for (ArmorStand as : mjolnirThrown)
+            for (MetadataValue m : as.getMetadata("mjolnir"))
                 if (m.getOwningPlugin().equals(plugin) && m.asString().equals(player.getUniqueId().toString())) return;
-        final Location loc = player.getLocation().add(0, player.getHeight() / 2, 0);
-        final ItemStack item = player.getInventory().getItemInMainHand();
-        final Vector v = loc.getDirection();
-        final ArmorStand stand = player.getWorld().spawn(loc.add(0, 0.25, 0), ArmorStand.class, a ->
+        Location loc = player.getLocation().add(0, player.getHeight() / 2, 0);
+        ItemStack item = player.getInventory().getItemInMainHand();
+        Vector v = loc.getDirection();
+        ArmorStand stand = player.getWorld().spawn(loc.add(0, 0.25, 0), ArmorStand.class, a ->
         {
             a.setVisible(false);
             a.setSmall(true);
@@ -164,19 +164,19 @@ final class Events implements Listener {
         mjolnirThrown.add(stand);
     }
 
-    private void lightning(final Player player, final boolean superd) {
+    private void lightning(Player player, boolean superd) {
         if (superd)
             superLightningCooldown.put(player, sectionn().getDouble("supercharge.super_abilities.lightning.cooldown"));
         else lightningCooldown.put(player, sectionn().getDouble("lightning.cooldown"));
-        final BlockIterator iterator = new BlockIterator(player, 40);
+        BlockIterator iterator = new BlockIterator(player, 40);
         Location loc = null;
         blocks:
         while (iterator.hasNext()) {
-            final Block block = iterator.next();
+            Block block = iterator.next();
             outer:
-            for (final Entity entity : block.getWorld().getNearbyEntities(block.getLocation(), 1, 1, 1)) {
+            for (Entity entity : block.getWorld().getNearbyEntities(block.getLocation(), 1, 1, 1)) {
                 if (!(entity instanceof LivingEntity) || entity.equals(player)) continue;
-                for (final MetadataValue m : entity.getMetadata("strike"))
+                for (MetadataValue m : entity.getMetadata("strike"))
                     if (m.getOwningPlugin().equals(plugin)) continue outer;
                 //	lightning = entity.getWorld().strikeLightning(entity.getLocation());
                 loc = entity.getLocation();
@@ -190,12 +190,12 @@ final class Events implements Listener {
         }
         if (superd) superLightningRecurse(loc, 0, player.getUniqueId());
         else {
-            final LightningStrike lightning = loc.getWorld().strikeLightning(loc);
+            LightningStrike lightning = loc.getWorld().strikeLightning(loc);
             lightning.setMetadata("strike", new FixedMetadataValue(plugin, player.getUniqueId().toString()));
         }
     }
 
-    private void supercharge(final Player player) {
+    private void supercharge(Player player) {
         superchargeCooldown.put(player, sectionn().getDouble("supercharge.cooldown"));
         final Location loc = player.getLocation();
         strikeEffect(loc, 50, 10);
@@ -206,13 +206,13 @@ final class Events implements Listener {
         }, 10);
     }
 
-    private void throwMjolnir(final ArmorStand stand, final Player thrower, final Vector v, final int recurse, final boolean superd) {
+    private void throwMjolnir(ArmorStand stand, Player thrower, Vector v, int recurse, boolean superd) {
         if (stand.isDead()) return;
         if (recurse < 30) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 outer:
-                for (final Entity e : stand.getNearbyEntities(1.0, 1.0, 1.0)) {
-                    for (final MetadataValue m : e.getMetadata("mjolnir"))
+                for (Entity e : stand.getNearbyEntities(1.0, 1.0, 1.0)) {
+                    for (MetadataValue m : e.getMetadata("mjolnir"))
                         if (m.getOwningPlugin().equals(plugin)) continue outer;
                     if (e != thrower && e != stand && e instanceof LivingEntity) {
                         ((LivingEntity) e).damage(sectionn().getDouble(superd ? "supercharge.super_abilities.throw.damage" : "throw.damage"), thrower);
@@ -222,7 +222,7 @@ final class Events implements Listener {
                     }
                 }
                 stand.setRightArmPose(stand.getRightArmPose().add(0.3, 0.0, 0.01));
-                final Vector v2 = v.subtract(new Vector(0, 0.03, 0));
+                Vector v2 = v.subtract(new Vector(0, 0.03, 0));
                 stand.setVelocity(v2);
                 if (!stand.isDead() && stand.getWorld().getBlockAt(stand.getLocation().add(v)).getType().isSolid())
                     throwMjolnir(stand, thrower, v2, 30, superd);
@@ -231,11 +231,11 @@ final class Events implements Listener {
         } else {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
             {
-                final Location loc = thrower.getLocation().add(0, 0.25, 0);
-                final Location standLoc = stand.getLocation();
+                Location loc = thrower.getLocation().add(0, 0.25, 0);
+                Location standLoc = stand.getLocation();
 
                 if (loc.distance(standLoc) < 0.7 && thrower.getInventory().firstEmpty() != -1) {
-                    final ItemStack i = stand.getEquipment().getItemInMainHand();
+                    ItemStack i = stand.getEquipment().getItemInMainHand();
                     if (thrower.getInventory().getItemInMainHand().getType() == Material.AIR)
                         thrower.getInventory().setItemInMainHand(i);
                     else thrower.getInventory().addItem(i);
@@ -247,7 +247,7 @@ final class Events implements Listener {
                 } else {
                     if (recurse % 100 == 0) stand.teleport(loc);
                     stand.setRightArmPose(stand.getRightArmPose().add(0.3, 0.0, 0.01));
-                    final Vector v2 = loc.subtract(standLoc).toVector().normalize().multiply(1.5);
+                    Vector v2 = loc.subtract(standLoc).toVector().normalize().multiply(1.5);
                     stand.setVelocity(v2);
                     if (!stand.isDead()) throwMjolnir(stand, thrower, v2, recurse + 1, superd);
                 }
@@ -255,7 +255,7 @@ final class Events implements Listener {
         }
     }
 
-    private void superLightningRecurse(final Location loc, final int recurse, final UUID uuid) {
+    private void superLightningRecurse(Location loc, int recurse, UUID uuid) {
         if (recurse > 4) {
             final LightningStrike lightning = loc.getWorld().strikeLightning(loc);
             lightning.setMetadata("superstrike", new FixedMetadataValue(plugin, uuid.toString()));
@@ -268,9 +268,9 @@ final class Events implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> superLightningRecurse(loc, recurse + 1, uuid), 2);
     }
 
-    private void superChargeRecurse(final Player player, final int recurse) {
+    private void superChargeRecurse(Player player, int recurse) {
         if (recurse > 9) {
-            final LightningStrike lightning = player.getWorld().strikeLightning(player.getLocation());
+            LightningStrike lightning = player.getWorld().strikeLightning(player.getLocation());
             lightning.setMetadata("super", new FixedMetadataValue(plugin, player.getUniqueId().toString()));
             supercharge.put(player, sectionn().getDouble("supercharge.duration"));
             player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
@@ -281,11 +281,11 @@ final class Events implements Listener {
     }
 
     void cleanUp() {
-        for (final ArmorStand a : mjolnirThrown)
-            for (final MetadataValue m : a.getMetadata("mjolnir"))
+        for (ArmorStand a : mjolnirThrown)
+            for (MetadataValue m : a.getMetadata("mjolnir"))
                 if (m.getOwningPlugin().equals(plugin)) {
-                    final Player player = Bukkit.getPlayer(UUID.fromString(m.asString()));
-                    final ItemStack i = a.getEquipment().getItemInMainHand();
+                    Player player = Bukkit.getPlayer(UUID.fromString(m.asString()));
+                    ItemStack i = a.getEquipment().getItemInMainHand();
                     if (player.getInventory().firstEmpty() != -1) {
                         if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
                             player.getInventory().setItemInMainHand(i);
@@ -299,11 +299,11 @@ final class Events implements Listener {
         return plugin.getConfig().getConfigurationSection("abilities");
     }
 
-    private void strikeEffect(final Location loc, final int yOffset, final int bound) {
+    private void strikeEffect(Location loc, int yOffset, int bound) {
         loc.getWorld().strikeLightningEffect(loc.add(ThreadLocalRandom.current().nextDouble(-bound, bound), yOffset, ThreadLocalRandom.current().nextDouble(-bound, bound)));
     }
     
-    private boolean isMjolnir(final ItemStack i) {
+    private boolean isMjolnir(ItemStack i) {
         if (i == null || i.getItemMeta() == null) return false;
         return i.getItemMeta().getPersistentDataContainer().has(plugin.key, PersistentDataType.INTEGER);
     }

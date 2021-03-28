@@ -11,7 +11,7 @@ public final class Mjolnir extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        final Metrics metrics = new Metrics(this, 10798);
+        Metrics metrics = new Metrics(this, 10798);
         
         getConfig().options().copyDefaults(true);
         saveConfig();

@@ -9,15 +9,15 @@ import java.util.UUID;
 public final class Cooldown {
     private final HashMap<UUID, Long> map = new HashMap<>();
 
-    public boolean ready(final Entity entity) {
+    public boolean ready(Entity entity) {
         return getSecondsRemaining(entity, false) <= 0;
     }
 
-    public void put(final Player player, final double seconds) {
+    public void put(Player player, double seconds) {
         map.put(player.getUniqueId(), (long) (System.currentTimeMillis() + seconds * 1000));
     }
 
-    public double getSecondsRemaining(final Entity entity, final boolean round) {
+    public double getSecondsRemaining(Entity entity, boolean round) {
         double seconds = (map.getOrDefault(entity.getUniqueId(), 0L) - System.currentTimeMillis())/1000D;
         if (round) seconds = Math.round(seconds * 10) / 10D;
         return seconds;
