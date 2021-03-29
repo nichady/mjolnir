@@ -1,4 +1,4 @@
-package io.github.nichthai.mjolnir;
+package com.github.nichthai.mjolnir;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,13 +23,13 @@ final class Cmd implements TabExecutor {
     private final Mjolnir plugin;
     private ItemStack item;
 
-    Cmd(final Mjolnir plugin) {
+    Cmd(Mjolnir plugin) {
         this.plugin = plugin;
         reload();
     }
 
     @Override
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) sendMainMessage(sender);
         else switch (args[0]) {
             case "?":
@@ -55,17 +55,17 @@ final class Cmd implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length > 1) return new ArrayList<>();
         return StringUtil.copyPartialMatches(args[0], Arrays.asList("help", "get", "reload"), new ArrayList<>());
     }
 
-    private void sendMainMessage(final CommandSender sender) {
+    private void sendMainMessage(CommandSender sender) {
         sender.sendMessage(ChatColor.BLUE + "Running " + ChatColor.GOLD + ChatColor.BOLD + plugin.getDescription().getFullName());
         if (sender.hasPermission("mjolnir.command.help")) sender.sendMessage(ChatColor.BLUE + "Use " + ChatColor.GOLD + "/mjolnir help " + ChatColor.BLUE + "to view available commands.");
     }
 
-    private void sendHelpMessage(final CommandSender sender) {
+    private void sendHelpMessage(CommandSender sender) {
         sender.sendMessage("");
         sender.sendMessage(ChatColor.GOLD + (ChatColor.BOLD + plugin.getDescription().getFullName()));
         if (sender.hasPermission("mjolnir.command.help")) sender.sendMessage(ChatColor.BLUE + "/mjolnir help" + ChatColor.GRAY + " Displays this");
@@ -74,27 +74,27 @@ final class Cmd implements TabExecutor {
         sender.sendMessage("");
     }
 
-    private void giveItem(final Player player) {
+    private void giveItem(Player player) {
         if (player.getInventory().firstEmpty() == -1) player.sendMessage(ChatColor.RED + "Please empty your inventory first!");
         else player.getInventory().addItem(item.clone());
     }
 
     private void reload() {
-        final ConfigurationSection config = plugin.getConfig();
+        ConfigurationSection config = plugin.getConfig();
         item = new ItemStack(Material.matchMaterial(config.getString("material")));
-        final ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
 
-        for (final String s : config.getStringList("ench")) {
-            final String enchName = s.split(":")[0].toLowerCase();
-            final int lvl = Integer.parseInt(s.split(":")[1]);
-            final Enchantment ench = Enchantment.getByKey(NamespacedKey.minecraft(enchName));
+        for (String s : config.getStringList("ench")) {
+            String enchName = s.split(":")[0].toLowerCase();
+            int lvl = Integer.parseInt(s.split(":")[1]);
+            Enchantment ench = Enchantment.getByKey(NamespacedKey.minecraft(enchName));
             if (ench != null) meta.addEnchant(ench, lvl, true);
             else throw new IllegalArgumentException(enchName + " is not a valid enchantment");
         }
 
-        final List<String> lore = new ArrayList<>();
-        final List<String> cfgLore = config.getStringList("lore");
-        for (final String s : cfgLore) lore.add(ChatColor.translateAlternateColorCodes('&', s));
+        List<String> lore = new ArrayList<>();
+        List<String> cfgLore = config.getStringList("lore");
+        for (String s : cfgLore) lore.add(ChatColor.translateAlternateColorCodes('&', s));
 
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("name")));
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
