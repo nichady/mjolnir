@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -31,12 +32,12 @@ final class Events implements Listener {
         superLightningCooldown = new Cooldown();
     private final Duration supercharge;
     private final Set<ArmorStand> mjolnirThrown = new HashSet<>();
-
+    
     Events(Mjolnir plugin) {
         this.plugin = plugin;
         supercharge = new Duration(plugin);
     }
-
+    
     void schedule() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (final UUID uuid : supercharge.getAll()) {
@@ -53,7 +54,7 @@ final class Events implements Listener {
             if (m.getOwningPlugin() != null && m.getOwningPlugin().equals(plugin)) e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     void onPlayerQuit(PlayerQuitEvent e) {
         final Player player = e.getPlayer();
@@ -74,7 +75,7 @@ final class Events implements Listener {
                 }
             }
     }
-
+    
     @EventHandler
     void onRightClick(PlayerInteractEvent e) {
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -113,14 +114,14 @@ final class Events implements Listener {
             }
         }
     }
-
+    
     @EventHandler
     void onDamage(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Damageable)) return;
         final Damageable victim = ((Damageable) e.getEntity());
         final Entity damager = e.getDamager();
         if (e.getCause() != EntityDamageEvent.DamageCause.LIGHTNING) return;
-
+        
         final Map<String, String> map = new HashMap<>();
         map.put("strike", "lightning.damage");
         map.put("superstrike", "supercharge.super_abilities.lightning.damage");
@@ -144,26 +145,39 @@ final class Events implements Listener {
         }
     }
     
-    private void throww(Player player, /*boolean mainHand,*/ final boolean superd) {
+    private void throww(Player player, /*boolean mainHand,*/ boolean superd) {
         for (ArmorStand as : mjolnirThrown)
             for (MetadataValue m : as.getMetadata("mjolnir"))
                 if (m.getOwningPlugin().equals(plugin) && m.asString().equals(player.getUniqueId().toString())) return;
         Location loc = player.getLocation().add(0, player.getHeight() / 2, 0);
         ItemStack item = player.getInventory().getItemInMainHand();
         Vector v = loc.getDirection();
-        ArmorStand stand = player.getWorld().spawn(loc.add(0, 0.25, 0), ArmorStand.class, a ->
-        {
+        ArmorStand stand = player.getWorld().spawn(loc.add(0, 0.25, 0), ArmorStand.class, a -> {
             a.setVisible(false);
             a.setSmall(true);
             a.setInvulnerable(true);
             a.getEquipment().setItemInMainHand(item);
             a.setMetadata("mjolnir", new FixedMetadataValue(plugin, player.getUniqueId().toString()));
+            
+            /*
+                The following code is to fix intended behavior when the server is running paper.
+                If "armor-stands-tick" in paper.yml is set to false, the armorstand never moves,
+                even if velocity is set. The code is basically doing: a.setCanTick(true);
+             */
+            try {
+                ArmorStand.class.getMethod("setCanTick", boolean.class).invoke(a, true);
+            } catch (NoSuchMethodException e) {
+                // Paper method not found... do nothing
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                // This catch block should not be reached
+                e.printStackTrace();
+            }
         });
         item.setAmount(0);
         throwMjolnir(stand, player, v, 0, superd);
         mjolnirThrown.add(stand);
     }
-
+    
     private void lightning(Player player, boolean superd) {
         if (superd)
             superLightningCooldown.put(player, sectionn().getDouble("supercharge.super_abilities.lightning.cooldown"));
@@ -194,7 +208,7 @@ final class Events implements Listener {
             lightning.setMetadata("strike", new FixedMetadataValue(plugin, player.getUniqueId().toString()));
         }
     }
-
+    
     private void supercharge(Player player) {
         superchargeCooldown.put(player, sectionn().getDouble("supercharge.cooldown"));
         final Location loc = player.getLocation();
@@ -205,7 +219,7 @@ final class Events implements Listener {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> superChargeRecurse(player, 0), 10);
         }, 10);
     }
-
+    
     private void throwMjolnir(ArmorStand stand, Player thrower, Vector v, int recurse, boolean superd) {
         if (stand.isDead()) return;
         if (recurse < 30) {
@@ -216,7 +230,8 @@ final class Events implements Listener {
                         if (m.getOwningPlugin().equals(plugin)) continue outer;
                     if (e != thrower && e != stand && e instanceof LivingEntity) {
                         ((LivingEntity) e).damage(sectionn().getDouble(superd ? "supercharge.super_abilities.throw.damage" : "throw.damage"), thrower);
-                        if (sectionn().getBoolean(superd ? "supercharge.super_abilities.throw.ignite" : "throw.ignite") && stand.getFireTicks() > e.getFireTicks()) e.setFireTicks(stand.getFireTicks());
+                        if (sectionn().getBoolean(superd ? "supercharge.super_abilities.throw.ignite" : "throw.ignite") && stand.getFireTicks() > e.getFireTicks())
+                            e.setFireTicks(stand.getFireTicks());
                         throwMjolnir(stand, thrower, v, superd ? recurse + 1 : 30, superd);
                         return;
                     }
@@ -233,7 +248,7 @@ final class Events implements Listener {
             {
                 Location loc = thrower.getLocation().add(0, 0.25, 0);
                 Location standLoc = stand.getLocation();
-
+                
                 if (loc.distance(standLoc) < 0.7 && thrower.getInventory().firstEmpty() != -1) {
                     ItemStack i = stand.getEquipment().getItemInMainHand();
                     if (thrower.getInventory().getItemInMainHand().getType() == Material.AIR)
@@ -254,7 +269,7 @@ final class Events implements Listener {
             }, 1);
         }
     }
-
+    
     private void superLightningRecurse(Location loc, int recurse, UUID uuid) {
         if (recurse > 4) {
             final LightningStrike lightning = loc.getWorld().strikeLightning(loc);
@@ -267,7 +282,7 @@ final class Events implements Listener {
         strikeEffect(loc.clone(), 20 - recurse * 4, 5 - recurse);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> superLightningRecurse(loc, recurse + 1, uuid), 2);
     }
-
+    
     private void superChargeRecurse(Player player, int recurse) {
         if (recurse > 9) {
             LightningStrike lightning = player.getWorld().strikeLightning(player.getLocation());
@@ -279,7 +294,7 @@ final class Events implements Listener {
         strikeEffect(player.getLocation(), 50 - recurse * 5, 5 - recurse / 2);
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> superChargeRecurse(player, recurse + 1), 2);
     }
-
+    
     void cleanUp() {
         for (ArmorStand a : mjolnirThrown)
             for (MetadataValue m : a.getMetadata("mjolnir"))
@@ -294,11 +309,11 @@ final class Events implements Listener {
                     a.remove();
                 }
     }
-
+    
     private ConfigurationSection sectionn() {
         return plugin.getConfig().getConfigurationSection("abilities");
     }
-
+    
     private void strikeEffect(Location loc, int yOffset, int bound) {
         loc.getWorld().strikeLightningEffect(loc.add(ThreadLocalRandom.current().nextDouble(-bound, bound), yOffset, ThreadLocalRandom.current().nextDouble(-bound, bound)));
     }
