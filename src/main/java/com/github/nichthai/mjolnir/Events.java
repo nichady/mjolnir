@@ -145,7 +145,7 @@ final class Events implements Listener {
         }
     }
     
-    private void throww(Player player, /*boolean mainHand,*/ final boolean superd) {
+    private void throww(Player player, /*boolean mainHand,*/ boolean superd) {
         for (ArmorStand as : mjolnirThrown)
             for (MetadataValue m : as.getMetadata("mjolnir"))
                 if (m.getOwningPlugin().equals(plugin) && m.asString().equals(player.getUniqueId().toString())) return;
