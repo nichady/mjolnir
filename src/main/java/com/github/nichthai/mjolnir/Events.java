@@ -85,31 +85,31 @@ final class Events implements Listener {
                 if (player.hasPermission("mjolnir.use.throw") || !plugin.getConfig().getBoolean("require_permissions_to_use")) {
                     if (!supercharge.has(player)) {
                         if (throwCooldown.ready(player)) throww(player, false);
-                        else
-                            player.sendMessage(ChatColor.RED + "On Cooldown! (" + throwCooldown.getSecondsRemaining(player, true) + " seconds)");
+                        else if (sectionn().getBoolean("throw.show_cooldown"))
+                            sendCooldownMessage(player, "Throw", throwCooldown);
                     } else {
                         if (superThrowCooldown.ready(player)) throww(player, true);
-                        else
-                            player.sendMessage(ChatColor.RED + "On Cooldown! (" + superThrowCooldown.getSecondsRemaining(player, true) + " seconds)");
+                        else if (sectionn().getBoolean("supercharge.super_abilities.throw.show_cooldown"))
+                            sendCooldownMessage(player, "Super Throw", superThrowCooldown);
                     }
                 } else player.sendMessage(ChatColor.RED + "You don't have permission to use this.");
             } else if (player.getLocation().getPitch() > -70) {
                 if (player.hasPermission("mjolnir.use.lightning") || !plugin.getConfig().getBoolean("require_permissions_to_use")) {
                     if (!supercharge.has(player)) {
                         if (lightningCooldown.ready(player)) lightning(player, false);
-                        else
-                            player.sendMessage(ChatColor.RED + "On Cooldown! (" + lightningCooldown.getSecondsRemaining(player, true) + " seconds)");
+                        else if (sectionn().getBoolean("lightning.show_cooldown"))
+                            sendCooldownMessage(player, "Lightning", lightningCooldown);
                     } else {
                         if (superLightningCooldown.ready(player)) lightning(player, true);
-                        else
-                            player.sendMessage(ChatColor.RED + "On Cooldown! (" + superLightningCooldown.getSecondsRemaining(player, true) + " seconds)");
+                        else if (sectionn().getBoolean("supercharge.super_abilities.lightning.show_cooldown"))
+                            sendCooldownMessage(player, "Super Lightning", superLightningCooldown);
                     }
                 } else player.sendMessage(ChatColor.RED + "You don't have permission to use this.");
             } else {
                 if (player.hasPermission("mjolnir.use.supercharge") || !plugin.getConfig().getBoolean("require_permissions_to_use")) {
                     if (superchargeCooldown.ready(player)) supercharge(player);
-                    else
-                        player.sendMessage(ChatColor.RED + "On Cooldown! (" + superchargeCooldown.getSecondsRemaining(player, true) + " seconds)");
+                    else if (sectionn().getBoolean("supercharge.show_cooldown"))
+                        sendCooldownMessage(player, "Supercharge", superchargeCooldown);
                 } else player.sendMessage(ChatColor.RED + "You don't have permission to use this.");
             }
         }
@@ -321,5 +321,13 @@ final class Events implements Listener {
     private boolean isMjolnir(ItemStack i) {
         if (i == null || i.getItemMeta() == null) return false;
         return i.getItemMeta().getPersistentDataContainer().has(plugin.key, PersistentDataType.INTEGER);
+    }
+    
+    private void sendCooldownMessage(Player player, String abilityName, Cooldown cooldown) {
+        String msg = plugin.getConfig().getString("cooldown_message");
+        msg = msg.replaceAll("%ability%", abilityName);
+        msg = msg.replaceAll("%time%", String.valueOf(cooldown.getSecondsRemaining(player, true))); // Format double to 2 decimal string
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        player.sendMessage(msg); // TODO actionbar?
     }
 }
