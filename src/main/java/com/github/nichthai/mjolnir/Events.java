@@ -1,5 +1,7 @@
 package com.github.nichthai.mjolnir;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -148,7 +150,8 @@ final class Events implements Listener {
     private void throww(Player player, /*boolean mainHand,*/ boolean superd) {
         for (ArmorStand as : mjolnirThrown)
             for (MetadataValue m : as.getMetadata("mjolnir"))
-                if (Objects.equals(m.getOwningPlugin(), plugin) && m.asString().equals(player.getUniqueId().toString())) return;
+                if (Objects.equals(m.getOwningPlugin(), plugin) && m.asString().equals(player.getUniqueId().toString()))
+                    return;
         Location loc = player.getLocation().add(0, player.getHeight() / 2, 0);
         ItemStack item = player.getInventory().getItemInMainHand();
         Vector v = loc.getDirection();
@@ -330,6 +333,10 @@ final class Events implements Listener {
         msg = msg.replaceAll("%ability%", abilityName);
         msg = msg.replaceAll("%time%", String.valueOf(cooldown.getSecondsRemaining(player, true))); // Format double to 2 decimal string
         msg = ChatColor.translateAlternateColorCodes('&', msg);
-        player.sendMessage(msg); // TODO actionbar?
+        
+        if (plugin.getConfig().getBoolean("cooldown_in_actionbar"))
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg));
+        else player.sendMessage(msg);
     }
+    // TODO ench particles on hold and throw?
 }
