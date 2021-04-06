@@ -61,7 +61,7 @@ final class Events implements Listener {
         outer:
         for (final ArmorStand a : mjolnirThrown)
             for (final MetadataValue m : a.getMetadata("mjolnir")) {
-                if (m.getOwningPlugin().equals(plugin) && m.asString().equals(player.getUniqueId().toString())) {
+                if (Objects.equals(m.getOwningPlugin(), plugin) && m.asString().equals(player.getUniqueId().toString())) {
                     final ItemStack i = a.getEquipment().getItemInMainHand();
                     if (player.getInventory().firstEmpty() != -1) {
                         if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
@@ -148,7 +148,7 @@ final class Events implements Listener {
     private void throww(Player player, /*boolean mainHand,*/ boolean superd) {
         for (ArmorStand as : mjolnirThrown)
             for (MetadataValue m : as.getMetadata("mjolnir"))
-                if (m.getOwningPlugin().equals(plugin) && m.asString().equals(player.getUniqueId().toString())) return;
+                if (Objects.equals(m.getOwningPlugin(), plugin) && m.asString().equals(player.getUniqueId().toString())) return;
         Location loc = player.getLocation().add(0, player.getHeight() / 2, 0);
         ItemStack item = player.getInventory().getItemInMainHand();
         Vector v = loc.getDirection();
@@ -185,17 +185,19 @@ final class Events implements Listener {
         BlockIterator iterator = new BlockIterator(player, 40);
         Location loc = null;
         blocks:
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) { // TODO make this a method
             Block block = iterator.next();
+            
             outer:
             for (Entity entity : block.getWorld().getNearbyEntities(block.getLocation(), 1, 1, 1)) {
                 if (!(entity instanceof LivingEntity) || entity.equals(player)) continue;
                 for (MetadataValue m : entity.getMetadata("strike"))
-                    if (m.getOwningPlugin().equals(plugin)) continue outer;
+                    if (Objects.equals(m.getOwningPlugin(), plugin)) continue outer;
                 //	lightning = entity.getWorld().strikeLightning(entity.getLocation());
                 loc = entity.getLocation();
                 break blocks;
             }
+            
             if (!block.isPassable() || !iterator.hasNext()) {
                 //	lightning = block.getWorld().strikeLightning(block.getLocation());
                 loc = block.getLocation();
@@ -227,7 +229,7 @@ final class Events implements Listener {
                 outer:
                 for (Entity e : stand.getNearbyEntities(1.0, 1.0, 1.0)) {
                     for (MetadataValue m : e.getMetadata("mjolnir"))
-                        if (m.getOwningPlugin().equals(plugin)) continue outer;
+                        if (Objects.equals(m.getOwningPlugin(), plugin)) continue outer;
                     if (e != thrower && e != stand && e instanceof LivingEntity) {
                         ((LivingEntity) e).damage(sectionn().getDouble(superd ? "supercharge.super_abilities.throw.damage" : "throw.damage"), thrower);
                         if (sectionn().getBoolean(superd ? "supercharge.super_abilities.throw.ignite" : "throw.ignite") && stand.getFireTicks() > e.getFireTicks())
@@ -298,7 +300,7 @@ final class Events implements Listener {
     void cleanUp() {
         for (ArmorStand a : mjolnirThrown)
             for (MetadataValue m : a.getMetadata("mjolnir"))
-                if (m.getOwningPlugin().equals(plugin)) {
+                if (Objects.equals(m.getOwningPlugin(), plugin)) {
                     Player player = Bukkit.getPlayer(UUID.fromString(m.asString()));
                     ItemStack i = a.getEquipment().getItemInMainHand();
                     if (player.getInventory().firstEmpty() != -1) {
