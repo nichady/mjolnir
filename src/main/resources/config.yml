@@ -1,7 +1,16 @@
+# Configuration for Mjolnir
+
+# The material that Mjolnir will be. List of materials is at
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 material: GOLDEN_AXE
+
 name: "&6Mjölnir"
+
+# List of enchantments. For enchantments with multiple
+# words, separate with underscores.
 ench:
   - sharpness:3
+
 lore:
   - "&3The Hammer of Thor"
   - ""
@@ -9,29 +18,47 @@ lore:
   - "&1Shift right click to summon lightning."
   - "&1Shift right click while looking up to supercharge."
   - "&1While supercharged, your abilities are enhanced."
+
 unbreakable: true
+
+# This is used for resource packs if you want to give Mjolnir a custom texture
 custom_model_data: 0
+
 require_permissions_to_use: false
+
+# The cooldown message.
+# %ability% will be replaced with the ability name.
+# %time% will be replaced with the number of seconds remaining.
+cooldown_message: "&6%ability% &cis on cooldown for another &6%time% &cseconds!"
+
+# Setting this to false will instead display cooldown messages in chat
+cooldown_in_actionbar: true
+
 abilities:
   throw:
     damage: 10
-    cooldown: 1.5
     ignite: true
+    cooldown: 1.5
+    show_cooldown: true
   lightning:
     damage: 20
     cooldown: 8
+    show_cooldown: true
   supercharge:
     damage: 20
-    cooldown: 120
     duration: 14
+    cooldown: 120
+    show_cooldown: true
     super_abilities:
       throw:
         damage: 20
-        cooldown: 0
         ignite: true
+        cooldown: 0
+        show_cooldown: true
       lightning:
         damage: 20
-        cooldown: 2
         explosion_power: 7
         set_fire: true
         break_blocks: true
+        cooldown: 2
+        show_cooldown: true

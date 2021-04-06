@@ -1,9 +1,28 @@
 name: Mjolnir
 version: ${project.version}
 main: com.github.nichthai.mjolnir.Mjolnir
-api-version: 1.13
+api-version: 1.16
 author: nichthai
 commands:
   mjolnir:
     description: Main command for the Mjolnir plugin
     usage: /<command>
+permissions:
+  mjolnir.command.help:
+    description: Lets the player do "/mjolnir help"
+    default: op
+  mjolnir.command.get:
+    description: Lets the player do "/mjolnir get"
+    default: op
+  mjolnir.command.reload:
+    description: Lets the player do "/mjolnir reload"
+    default: op
+  mjolnir.use.throw:
+    description: Lets the player throw Mjolnir
+    default: op
+  mjolnir.use.lightning:
+    description: Lets the player summon lightning with Mjolnir
+    default: op
+  mjolnir.use.supercharge:
+    description: Lets the player supercharge Mjolnir
+    default: op

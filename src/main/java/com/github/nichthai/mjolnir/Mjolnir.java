@@ -14,7 +14,7 @@ public final class Mjolnir extends JavaPlugin {
         Metrics metrics = new Metrics(this, 10798);
         
         getConfig().options().copyDefaults(true);
-        saveConfig();
+        saveDefaultConfig();
 
         getCommand("mjolnir").setExecutor(new Cmd(this));
 
