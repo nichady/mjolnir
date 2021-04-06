@@ -12,26 +12,35 @@ lore:
 unbreakable: true
 custom_model_data: 0
 require_permissions_to_use: false
+
+cooldown_message: "&6%ability% &cis on cooldown for another &6%time% &cseconds!"
+cooldown_in_actionbar: true
+
 abilities:
   throw:
     damage: 10
-    cooldown: 1.5
     ignite: true
+    cooldown: 1.5
+    show_cooldown: true
   lightning:
     damage: 20
     cooldown: 8
+    show_cooldown: true
   supercharge:
     damage: 20
-    cooldown: 120
     duration: 14
+    cooldown: 120
+    show_cooldown: true
     super_abilities:
       throw:
         damage: 20
-        cooldown: 0
         ignite: true
+        cooldown: 0
+        show_cooldown: true
       lightning:
         damage: 20
-        cooldown: 2
         explosion_power: 7
         set_fire: true
         break_blocks: true
+        cooldown: 2
+        show_cooldown: true
