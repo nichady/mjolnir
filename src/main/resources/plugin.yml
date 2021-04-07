@@ -1,7 +1,7 @@
 name: Mjolnir
 version: ${project.version}
 main: com.github.nichthai.mjolnir.Mjolnir
-api-version: 1.16
+api-version: 1.13
 author: nichthai
 commands:
   mjolnir:
