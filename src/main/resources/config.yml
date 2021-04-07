@@ -1,19 +1,12 @@
 # ---- Mjolnir Configuration ----
 # -------------------------------
 
-# The material that Mjolnir will be. List of materials is at
-# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 material: GOLDEN_AXE
-
-# The name of the hammer. Supports color codes.
 name: "&6Mjölnir"
 
-# List of enchantments. For enchantments with multiple
-# words, separate with underscores.
 ench:
   - sharpness:3
 
-# The lore of the hammer. Each item is a new line.
 lore:
   - "&3The Hammer of Thor"
   - ""
@@ -22,29 +15,17 @@ lore:
   - "&1Shift right click while looking up to supercharge."
   - "&1While supercharged, your abilities are enhanced."
 
-# Whether or not the item will lose durability when hitting things.
 unbreakable: true
-
-# This is used for resource packs if you want to give Mjolnir a custom texture.
 custom_model_data: 0
-
 require_permissions_to_use: false
 
-# The cooldown message.
-# %ability% will be replaced with the ability name.
-# %time% will be replaced with the number of seconds remaining.
 cooldown_message: "&6%ability% &cis on cooldown for another &6%time% &cseconds!"
-
-# Setting this to false will instead display cooldown messages in chat
 cooldown_in_actionbar: false
 
 abilities:
   throw:
     damage: 10
-    
-    # If this is true, mobs are lit on fire if the thrown hammer is on fire.
     ignite: true
-    
     cooldown: 1.5
     show_cooldown: true
   lightning:
@@ -59,10 +40,7 @@ abilities:
     super_abilities:
       throw:
         damage: 20
-  
-        # If this is true, mobs are lit on fire if the thrown hammer is on fire.
         ignite: true
-        
         cooldown: 0
         show_cooldown: true
       lightning:
