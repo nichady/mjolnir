@@ -33,7 +33,7 @@ require_permissions_to_use: false
 cooldown_message: "&6%ability% &cis on cooldown for another &6%time% &cseconds!"
 
 # Setting this to false will instead display cooldown messages in chat
-cooldown_in_actionbar: true
+cooldown_in_actionbar: false
 
 abilities:
   throw:
