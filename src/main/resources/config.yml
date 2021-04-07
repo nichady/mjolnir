@@ -1,4 +1,5 @@
-# Configuration for Mjolnir
+# ---- Configuration for Mjolnir ----
+# -----------------------------------
 
 # The material that Mjolnir will be. List of materials is at
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
