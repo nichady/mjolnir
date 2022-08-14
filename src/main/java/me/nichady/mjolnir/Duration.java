@@ -1,4 +1,4 @@
-package com.github.nichady.mjolnir;
+package me.nichady.mjolnir;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
