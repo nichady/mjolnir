@@ -1,4 +1,4 @@
-package com.github.nichady.mjolnir;
+package me.nichady.mjolnir;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
